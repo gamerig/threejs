@@ -1,29 +1,55 @@
 import { BaseTexture } from './BaseTexture';
 
 class _TextureCache {
-  private _cache: { [uuid: string]: BaseTexture } = {};
+  private _cache: { [id: string]: BaseTexture } = {};
 
-  add(uuid: string, texture: BaseTexture): void {
-    if (this.has(uuid)) {
-      console.warn(`TextureCache: ${uuid} was already added to the cache.`);
+  add(id: string, texture: BaseTexture): void {
+    if (this.has(id)) {
+      console.warn(`TextureCache: ${id} was already added to the cache.`);
+      this._cache[id].textureCacheIds.splice(this._cache[id].textureCacheIds.indexOf(id), 1);
     }
 
-    this._cache[uuid] = texture;
+    if (texture.textureCacheIds.indexOf(id) === -1) {
+      texture.textureCacheIds.push(id);
+    }
+
+    this._cache[id] = texture;
   }
 
-  get(uuid: string): BaseTexture | undefined {
-    return this._cache[uuid];
+  get(id: string): BaseTexture | undefined {
+    return this._cache[id];
   }
 
-  has(uuid: string): boolean {
-    return !!this._cache[uuid];
+  has(id: string): boolean {
+    return !!this._cache[id];
   }
 
-  remove(uuid: string): void {
-    delete this._cache[uuid];
+  remove(textureOrId: string | BaseTexture): void {
+    if (typeof textureOrId === 'string') {
+      const texture = this._cache[textureOrId];
+      if (!texture) {
+        return;
+      }
+
+      texture.textureCacheIds.splice(texture.textureCacheIds.indexOf(textureOrId), 1);
+      delete this._cache[textureOrId];
+      return;
+    } else {
+      textureOrId.textureCacheIds.forEach((id) => {
+        if (this._cache[id] === textureOrId) {
+          delete this._cache[id];
+        }
+      });
+
+      textureOrId.textureCacheIds = [];
+    }
   }
 
   clear(): void {
+    Object.entries(this._cache).forEach(([, texture]) => {
+      texture.textureCacheIds = [];
+    });
+
     this._cache = {};
   }
 }

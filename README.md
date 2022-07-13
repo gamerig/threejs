@@ -1,3 +1,3 @@
-# @gamerig/rendering
+# @gamerig/threejs
 
-A gamerig module built around three.js
+Three.js extension library for additional features

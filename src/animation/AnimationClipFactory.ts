@@ -10,13 +10,12 @@ import {
   VectorKeyframeTrack,
 } from 'three';
 
-import { Texture } from '../texture/Texture';
 import { AnimationSettings } from './AnimationSettings';
 import { AnimationClipJson, AnimationTrackJson } from './types';
 
-const fromTextures = (
+const fromTextureFrames = (
   name: string,
-  textures: Texture[] | string[],
+  keys: string[],
   options?: {
     property?: string;
     fps?: number;
@@ -26,9 +25,9 @@ const fromTextures = (
   const values = [];
 
   const frameTime = 1.0 / options?.fps ?? AnimationSettings.DEFAULT_FPS;
-  for (let i = 0; i < textures.length; i++) {
+  for (let i = 0; i < keys.length; i++) {
     times.push(i);
-    values.push(typeof textures[i] === 'string' ? textures[i] : (textures[i] as Texture).key);
+    values.push(keys[i]);
   }
 
   const track = new StringKeyframeTrack(options?.property ?? '.material.map', times, values);
@@ -99,4 +98,4 @@ const getTrackTypeForValueTypeName = (typeName: string) => {
   throw new Error('THREE.KeyframeTrack: Unsupported typeName: ' + typeName);
 };
 
-export { fromJson, fromTextures };
+export { fromJson, fromTextureFrames };

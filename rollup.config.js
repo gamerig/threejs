@@ -13,16 +13,15 @@ export default [
   {
     input: 'src/index.ts',
     output: {
-      name: 'Gamerig.Rendering',
-      file: 'dist/browser/gamerig.rendering.min.js',
+      name: 'Gamerig.Threejs',
+      file: 'dist/browser/gamerig.threejs.min.js',
       format: 'umd',
       sourcemap: !production,
       globals: {
-        '@gamerig/core': 'Gamerig.Core',
         three: 'THREE',
       },
     },
-    external: ['three', '@gamerig/core'],
+    external: ['three'],
     plugins: [
       del({
         targets: ['./dist'],
@@ -52,7 +51,7 @@ export default [
       { file: pkg.main, format: 'cjs', sourcemap: !production },
       { file: pkg.module, format: 'es', sourcemap: !production },
     ],
-    external: ['three', '@gamerig/core'],
+    external: ['three'],
   },
   // bundle all type definitions into one file
   {

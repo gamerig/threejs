@@ -1,38 +1,19 @@
-import { Color, Object3D, Vector4 } from 'three';
+import { Color, Object3D, Vector2, Vector4 } from 'three';
 
-import { Camera } from '../camera/Camera';
-import { Center, ScaleMode } from '../types';
-
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace Renderer {
-  export const KEY = Symbol('Renderer');
-}
+import { Camera } from '../cameras';
+import { Center, ScaleMode } from './types';
 
 export interface Renderer {
   readonly canvas: HTMLCanvasElement;
+  readonly canvasSize: Vector4;
 
-  // original set size(game size)
-  sizeX: number;
-  sizeY: number;
-
-  // canvas size in pixels
-  readonly canvasSizeX: number;
-  readonly canvasSizeY: number;
-
-  // determine final resolution by scaling the canvas size with this
+  size: Vector2;
   pixelDensity: number;
 
-  // min cap resolution
-  minResolutionX: number;
-  minResolutionY: number;
+  minResolution: Vector2;
+  maxResolution: Vector2;
 
-  // max cap resolution
-  maxResolutionX: number;
-  maxResolutionY: number;
-
-  // current resolution
-  readonly resolutionX: number;
-  readonly resolutionY: number;
+  readonly resolution: Vector2;
 
   scaleResolution: boolean;
   scaleMode: ScaleMode;
@@ -45,9 +26,5 @@ export interface Renderer {
   readonly viewport: Vector4;
   readonly viewportSize: Vector4;
 
-  setViewport(v: Vector4): void;
-  setViewport(x: number, y: number, width: number, height: number): void;
-  resetViewport(): void;
-
-  render(object: Object3D, camera: Camera): void;
+  render(object: Object3D, camera?: Camera): void;
 }

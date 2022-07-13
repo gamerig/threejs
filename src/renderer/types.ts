@@ -1,3 +1,9 @@
+export enum RendererEvent {
+  CanvasResized = 'canvasResized',
+  AspectChanged = 'aspectChanged',
+  ResolutionChanged = 'resolutionChanged',
+}
+
 export enum ScaleMode {
   None,
   Fit,

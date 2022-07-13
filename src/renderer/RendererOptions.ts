@@ -1,6 +1,6 @@
 import { WebGLRendererParameters } from 'three';
 
-import { Center, ScaleMode } from '../types';
+import { Center, ScaleMode } from './types';
 
 type WebGLRendererOptions = Omit<
   WebGLRendererParameters,

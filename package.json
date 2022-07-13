@@ -33,7 +33,7 @@
     "url": "https://github.com/gamerig/threejs/issues"
   },
   "homepage": "https://github.com/gamerig/threejs#readme",
-  "peerDependencies": {
+  "dependencies": {
     "three": "^0.142.0"
   },
   "devDependencies": {

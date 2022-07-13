@@ -11,6 +11,8 @@ import {
 import { TextureCache } from './TextureCache';
 
 export class BaseTexture extends Texture {
+  textureCacheIds: string[] = [];
+
   private readonly updateProps = [
     'wrapS',
     'wrapT',
