@@ -43,6 +43,9 @@ export class WebGLRenderer extends EventDispatcher implements Renderer {
     super();
 
     this._webgl = new ThreeRenderer(_options);
+    this._webgl.autoClear = false;
+    this._webgl.info.autoReset = false;
+    this._webgl.setScissorTest(true);
 
     this._scaleMode = this._options.size?.scaleMode ?? ScaleMode.None;
     this._autoCenter = this._options.size?.autoCenter ?? Center.None;
@@ -105,13 +108,24 @@ export class WebGLRenderer extends EventDispatcher implements Renderer {
   }
 
   update(): void {
-    this._scaleCanvas();
-    this._centerCanvas();
-    this._updateBounds();
-    this._updateResolution();
+    if (this.needsUpdate) {
+      this._scaleCanvas();
+      this._centerCanvas();
+      this._updateBounds();
+      this._updateResolution();
+
+      this.needsUpdate = false;
+    }
+  }
+
+  setSize(width: number, height: number): void {
+    this.size.set(width, height);
   }
 
   get canvas(): HTMLCanvasElement {
+    return this._webgl.domElement;
+  }
+  get domElement(): HTMLCanvasElement {
     return this._webgl.domElement;
   }
   get canvasSize(): Vector4 {
@@ -204,6 +218,8 @@ export class WebGLRenderer extends EventDispatcher implements Renderer {
   }
 
   clear(): void {
+    this._webgl.info.reset();
+
     this.viewport.set(0, 0, 1, 1);
 
     this._webgl.setClearColor(this.clearColor, this.clearAlpha);

@@ -1,9 +1,9 @@
-import { Color, Object3D, Vector2, Vector4 } from 'three';
+import { Color, EventDispatcher, Object3D, Vector2, Vector4 } from 'three';
 
 import { Camera } from '../cameras';
 import { Center, ScaleMode } from './types';
 
-export interface Renderer {
+export interface Renderer extends EventDispatcher, THREE.Renderer {
   readonly canvas: HTMLCanvasElement;
   readonly canvasSize: Vector4;
 
@@ -26,5 +26,9 @@ export interface Renderer {
   readonly viewport: Vector4;
   readonly viewportSize: Vector4;
 
+  update?(): void;
   render(object: Object3D, camera?: Camera): void;
+
+  clear(): void;
+  dispose(): void;
 }
