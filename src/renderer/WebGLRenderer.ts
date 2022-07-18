@@ -80,19 +80,7 @@ export class WebGLRenderer extends EventDispatcher implements Renderer {
     this._resolution = new Vector2();
     this._canvasSize = new Vector4();
 
-    this._viewport = new ObservableVector4(0, 0, 1, 1, () => {
-      this._viewportSize
-        .set(
-          this.resolution.x * this._viewport.x,
-          this.resolution.y * this._viewport.y,
-          this.resolution.x * this._viewport.width,
-          this.resolution.y * this._viewport.height,
-        )
-        .round();
-
-      this._webgl.setScissor(this._viewportSize);
-      this._webgl.setViewport(this._viewportSize);
-    });
+    this._viewport = new ObservableVector4(0, 0, 1, 1, this._onViewportChanged);
 
     this._viewportSize = new Vector4();
 
@@ -106,6 +94,20 @@ export class WebGLRenderer extends EventDispatcher implements Renderer {
 
     window.addEventListener('resize', () => (this.needsUpdate = true));
   }
+
+  private _onViewportChanged = (): void => {
+    this._viewportSize
+      .set(
+        this.resolution.x * this._viewport.x,
+        this.resolution.y * this._viewport.y,
+        this.resolution.x * this._viewport.width,
+        this.resolution.y * this._viewport.height,
+      )
+      .round();
+
+    this._webgl.setScissor(this._viewportSize);
+    this._webgl.setViewport(this._viewportSize);
+  };
 
   update(): void {
     if (this.needsUpdate) {
@@ -168,7 +170,7 @@ export class WebGLRenderer extends EventDispatcher implements Renderer {
   }
 
   get viewport(): Vector4 {
-    return this._viewport.clone();
+    return this._viewport;
   }
   get viewportSize(): Vector4 {
     return this._viewportSize.clone();

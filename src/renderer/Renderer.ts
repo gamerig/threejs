@@ -3,7 +3,7 @@ import { Color, EventDispatcher, Object3D, Vector2, Vector4 } from 'three';
 import { Camera } from '../cameras';
 import { Center, ScaleMode } from './types';
 
-export interface Renderer extends EventDispatcher, THREE.Renderer {
+export interface Renderer extends EventDispatcher {
   readonly canvas: HTMLCanvasElement;
   readonly canvasSize: Vector4;
 

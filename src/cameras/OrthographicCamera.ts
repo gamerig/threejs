@@ -7,10 +7,17 @@ import { Camera, CameraMixin } from './Camera';
 export class OrthographicCamera extends CameraMixin(BaseOrtographicCamera) implements Camera {
   readonly size: Vector4;
 
-  constructor(left: number, right: number, top: number, bottom: number, near: number, far: number) {
+  constructor(
+    left?: number,
+    right?: number,
+    top?: number,
+    bottom?: number,
+    near?: number,
+    far?: number,
+  ) {
     super(left, right, top, bottom, near, far);
 
-    this.size = new ObservableVector4(left, right, top, bottom, (v) => {
+    this.size = new ObservableVector4(this.left, this.right, this.top, this.bottom, (v) => {
       this.left = v.x;
       this.right = v.y;
       this.top = v.z;
@@ -20,6 +27,10 @@ export class OrthographicCamera extends CameraMixin(BaseOrtographicCamera) imple
     });
 
     return new Proxy(this, new OrthographicCameraProxyHandler());
+  }
+
+  setSize(size: number): void {
+    this.size.set(-size / 2, size / 2, size / 2, -size / 2);
   }
 
   update(renderer: Renderer): void {
