@@ -1,6 +1,6 @@
 import { AnimationClip, RepeatWrapping, Vector2, Vector4 } from 'three';
 
-import { BaseTexture, Texture, TextureCache } from '../texture';
+import { BaseTexture, Texture } from '../texture';
 
 export class Spritesheet {
   public textures: { [name: string]: Texture } = {};
@@ -33,7 +33,7 @@ export class Spritesheet {
     trim?: Vector4;
     rotated?: boolean;
     anchor?: Vector2;
-  }): this {
+  }): Texture {
     const texture = new Texture(
       this._baseTexture,
       data.frame,
@@ -44,14 +44,13 @@ export class Spritesheet {
     );
 
     this.textures[data.name] = texture;
-    TextureCache.add(data.name, texture);
 
-    return this;
+    return texture;
   }
 
-  addAnimation(anim: AnimationClip): this {
+  addAnimation(anim: AnimationClip): AnimationClip {
     this.animations[anim.name] = anim;
-    return this;
+    return anim;
   }
 
   get baseTexture(): BaseTexture {
@@ -60,12 +59,10 @@ export class Spritesheet {
 
   dispose(): void {
     for (const key in this.textures) {
-      TextureCache.remove(this.textures[key]);
       this.textures[key].dispose();
     }
 
     if (this._disposeBase) {
-      TextureCache.remove(this._baseTexture);
       this._baseTexture.dispose();
     }
 

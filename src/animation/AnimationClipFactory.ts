@@ -2,6 +2,7 @@ import {
   AnimationClip,
   BooleanKeyframeTrack,
   ColorKeyframeTrack,
+  InterpolateDiscrete,
   KeyframeTrack,
   MathUtils,
   NumberKeyframeTrack,
@@ -24,15 +25,19 @@ const fromTextureFrames = (
   const times = [];
   const values = [];
 
-  const frameTime = 1.0 / options?.fps ?? AnimationSettings.DEFAULT_FPS;
+  const frameTime = 1.0 / (options?.fps ?? AnimationSettings.DEFAULT_FPS);
   for (let i = 0; i < keys.length; i++) {
     times.push(i);
     values.push(keys[i]);
   }
 
-  const track = new StringKeyframeTrack(options?.property ?? '.material.map', times, values);
+  const track = new StringKeyframeTrack(
+    options?.property ?? '.material.map',
+    times,
+    values,
+    InterpolateDiscrete,
+  );
   track.scale(frameTime);
-  track.ValueTypeName = 'texture';
 
   return new AnimationClip(name, -1, [track]);
 };
@@ -91,7 +96,6 @@ const getTrackTypeForValueTypeName = (typeName: string) => {
       return BooleanKeyframeTrack;
 
     case 'string':
-    case 'texture':
       return StringKeyframeTrack;
   }
 

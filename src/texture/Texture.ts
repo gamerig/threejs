@@ -19,7 +19,7 @@ export class Texture extends BaseTexture {
   private _noFrame: boolean;
 
   constructor(
-    source: Texture | BaseTexture | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
+    source?: Texture | BaseTexture | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
     frame?: Vector4,
     orig?: Vector4,
     trim?: Vector4,
@@ -32,6 +32,10 @@ export class Texture extends BaseTexture {
     if (!frame) {
       this._noFrame = true;
       frame = new ObservableVector4(0, 0, 1, 1, this._updateUVs);
+    }
+
+    if (!source) {
+      source = new BaseTexture();
     }
 
     if (source instanceof Texture) {
@@ -56,12 +60,17 @@ export class Texture extends BaseTexture {
     this._anchor = anchor ? anchor.clone() : new Vector2(0, 0);
 
     this._baseTexture.addEventListener('update', this._onBaseTextureUpdated);
+
     this.onUpdate = this._updateUVs;
 
     this._onBaseTextureUpdated();
   }
 
   private _onBaseTextureUpdated = (): void => {
+    if (!this._baseTexture.image) {
+      return;
+    }
+
     this.copy(this._baseTexture);
 
     if (this._noFrame) {
@@ -73,6 +82,10 @@ export class Texture extends BaseTexture {
   };
 
   private _updateUVs = (): void => {
+    if (!this._baseTexture.image) {
+      return;
+    }
+
     const repeatX = this._frame.width / this._baseTexture.image.width;
     const repeatY = this._frame.height / this._baseTexture.image.height;
 

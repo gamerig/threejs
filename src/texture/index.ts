@@ -1,3 +1,3 @@
 export { BaseTexture } from './BaseTexture';
 export { Texture } from './Texture';
-export { TextureCache } from './TextureCache';
+export { GlobalTextureManager, TextureManager } from './TextureManager';

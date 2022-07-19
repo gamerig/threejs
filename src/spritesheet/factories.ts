@@ -1,7 +1,7 @@
 import { Vector2, Vector4 } from 'three';
 
 import { AnimationClipFactory, AnimationClipJson } from '../animation';
-import { BaseTexture, Texture } from '../texture';
+import { BaseTexture, GlobalTextureManager, Texture } from '../texture';
 import { Spritesheet } from './Spritesheet';
 import { SpritesheetFrameJson, SpritesheetJson } from './types';
 
@@ -9,11 +9,11 @@ export const fromJson = (atlas: BaseTexture | Texture, json: SpritesheetJson): S
   const spritesheet = new Spritesheet(atlas);
 
   const frames = json.frames;
-  const frameKeys = Object.keys(json.frames);
+  const frameKeys = Object.keys(frames);
 
   for (let i = 0; i < frameKeys.length; i++) {
     const name = frameKeys[i];
-    const data = frames[i];
+    const data = frames[name];
 
     parseJsonFrame(spritesheet, name, data);
   }
@@ -40,7 +40,7 @@ export const fromFixedFrames = (
 
   const keys = [];
   for (let i = 0; i < total; i++) {
-    const name = `${options.framePrefix}_${i}`;
+    const name = `${options.framePrefix}${i}`;
     keys.push(name);
 
     const frame = new Vector4(
@@ -50,11 +50,14 @@ export const fromFixedFrames = (
       options.frameHeight,
     );
 
-    spritesheet.addFrame({
+    const texture = spritesheet.addFrame({
       name,
       frame,
       anchor: options.anchor ?? new Vector2(0, 0),
     });
+
+    GlobalTextureManager.add(texture.uuid, texture);
+    GlobalTextureManager.add(name, texture);
   }
 
   spritesheet.addAnimation(AnimationClipFactory.fromTextureFrames(options.framePrefix, keys));
@@ -102,7 +105,7 @@ const parseJsonFrame = (
       );
     }
 
-    spritesheet.addFrame({
+    const texture = spritesheet.addFrame({
       name,
       frame,
       orig,
@@ -112,6 +115,9 @@ const parseJsonFrame = (
         ? new Vector2(data.anchor.x, data.anchor.y).clampScalar(0, 1)
         : new Vector2(0, 0),
     });
+
+    GlobalTextureManager.add(texture.uuid, texture);
+    GlobalTextureManager.add(name, texture);
   }
 };
 

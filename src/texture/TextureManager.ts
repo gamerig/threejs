@@ -1,6 +1,6 @@
 import { BaseTexture } from './BaseTexture';
 
-class _TextureCache {
+class TextureManager {
   private _cache: { [id: string]: BaseTexture } = {};
 
   add(id: string, texture: BaseTexture): void {
@@ -54,6 +54,7 @@ class _TextureCache {
   }
 }
 
-const TextureCache = new _TextureCache();
+const GlobalTextureManager = new TextureManager();
+const GlobalBaseTextureManager = new TextureManager();
 
-export { TextureCache };
+export { GlobalBaseTextureManager, GlobalTextureManager, TextureManager };

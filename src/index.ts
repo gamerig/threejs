@@ -1,5 +1,6 @@
 export * from './animation';
 export * from './cameras';
+export * from './loader';
 export * from './math';
 export * from './objects';
 export * from './renderer';

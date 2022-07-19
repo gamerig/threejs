@@ -1,7 +1,7 @@
 import { DoubleSide, Group, Mesh, MeshBasicMaterial, PlaneGeometry, Vector2 } from 'three';
 
 import { ObservableVector2 } from '../math';
-import { BaseTexture, Texture, TextureCache } from '../texture';
+import { BaseTexture, GlobalTextureManager, Texture } from '../texture';
 
 export class Sprite extends Group {
   protected _texture: Texture;
@@ -12,8 +12,8 @@ export class Sprite extends Group {
   protected _anchor: Vector2;
 
   protected _mesh: Mesh;
-  protected _meshGeometry: PlaneGeometry;
-  protected _meshMaterial: MeshBasicMaterial;
+  protected readonly _meshGeometry: PlaneGeometry;
+  protected readonly _meshMaterial: MeshBasicMaterial;
 
   autoUpdateAnchor = true;
 
@@ -75,12 +75,26 @@ export class Sprite extends Group {
     this._anchor.copy(value);
   }
 
+  get material() {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const scope = this;
+
+    return {
+      get map(): Texture {
+        return scope.texture;
+      },
+      set map(value: Texture | BaseTexture | string) {
+        scope.texture = value;
+      },
+    };
+  }
+
   get texture(): Texture {
     return this._texture;
   }
   set texture(value: Texture | BaseTexture | string) {
     if (typeof value === 'string') {
-      value = TextureCache.get(value);
+      value = GlobalTextureManager.get(value);
       if (!value) {
         throw new Error(`Sprite: Texture with key "${value}" not found.`);
       }

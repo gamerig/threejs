@@ -8,8 +8,6 @@ import {
   Wrapping,
 } from 'three';
 
-import { TextureCache } from './TextureCache';
-
 export class BaseTexture extends Texture {
   textureCacheIds: string[] = [];
 
@@ -22,6 +20,7 @@ export class BaseTexture extends Texture {
     'type',
     'anisotropy',
     'encoding',
+    'image',
   ];
 
   constructor(
@@ -54,13 +53,13 @@ export class BaseTexture extends Texture {
       },
     });
 
-    TextureCache.add(instance.uuid, instance);
-
     return instance;
   }
 
   update(): void {
-    this.needsUpdate = true;
-    this.dispatchEvent({ type: 'update', target: this });
+    if (!!this.image) {
+      this.needsUpdate = true;
+      this.dispatchEvent({ type: 'update', target: this });
+    }
   }
 }
