@@ -28,5 +28,6 @@ export type SpritesheetJson = {
   animations?: { [name: string]: string[] | AnimationClipJson };
   meta: {
     scale: number;
+    image: string;
   };
 };

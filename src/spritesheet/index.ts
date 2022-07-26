@@ -1,3 +1,3 @@
-export * as SpritesheetFactory from './factories';
 export * from './Spritesheet';
+export * as SpritesheetFactory from './SpritesheetFactory';
 export * from './types';

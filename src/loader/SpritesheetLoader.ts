@@ -1,6 +1,6 @@
 import { FileLoader, Loader, LoadingManager, Vector2 } from 'three';
 
-import { Spritesheet, SpritesheetFactory } from '../spritesheet';
+import { Spritesheet, SpritesheetFactory, SpritesheetJson } from '../spritesheet';
 import { Texture } from '../texture';
 import { TextureLoader } from './TextureLoader';
 
@@ -17,7 +17,41 @@ export class SpritesheetLoader extends Loader {
     super(manager);
   }
 
-  loadFromFrames(
+  load(url: string, onLoad?: (spritesheet: Spritesheet) => void, onProgress?: any, onError?: any) {
+    const jsonLoader = new FileLoader(this.manager);
+    jsonLoader.setPath(this.path);
+    jsonLoader.setResponseType('json');
+    jsonLoader.setWithCredentials(this.withCredentials);
+    jsonLoader.setCrossOrigin(this.crossOrigin);
+    jsonLoader.setRequestHeader(this.requestHeader);
+
+    const textureLoader = new TextureLoader(this.manager);
+    textureLoader.setCrossOrigin(this.crossOrigin);
+    textureLoader.setPath(this.path);
+    textureLoader.setWithCredentials(this.withCredentials);
+    textureLoader.setRequestHeader(this.requestHeader);
+
+    jsonLoader
+      .loadAsync(url, onProgress)
+      .then((json) => {
+        const spec = json as any as SpritesheetJson;
+        const imageUrl = spec.meta.image;
+
+        textureLoader
+          .loadAsync(imageUrl, onProgress)
+          .then((texture) => {
+            const spritesheet = SpritesheetFactory.fromJson(texture, spec);
+
+            if (onLoad) {
+              onLoad(spritesheet);
+            }
+          })
+          .catch(onError);
+      })
+      .catch(onError);
+  }
+
+  loadWithFrame(
     imageUrl: string,
     frame: FrameSpec,
     onLoad: (spritesheet: Spritesheet) => any,
@@ -48,7 +82,7 @@ export class SpritesheetLoader extends Loader {
       .catch(onError);
   }
 
-  loadFromJson(
+  loadWithJson(
     imageUrl: string,
     jsonUrl: string,
     onLoad?: (spritesheet: Spritesheet) => void,

@@ -13,6 +13,8 @@ export class TextureLoader extends Loader {
     const loader = new ImageLoader(this.manager);
     loader.setCrossOrigin(this.crossOrigin);
     loader.setPath(this.path);
+    loader.setRequestHeader(this.requestHeader);
+    loader.setWithCredentials(this.withCredentials);
 
     loader.load(
       url,
